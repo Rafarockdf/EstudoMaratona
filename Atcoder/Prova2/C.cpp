@@ -25,6 +25,7 @@ int main() {
         //std::cout << "Chave: " << chave << ", Valor: "<< valor <<std::endl;
         
     //}
+    
     while(true){
 
         if (lista.find(aux) == lista.end()) {
