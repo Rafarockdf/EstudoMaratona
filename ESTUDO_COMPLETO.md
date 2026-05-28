@@ -428,12 +428,145 @@ int kmp(vector<int> _lps, vector<char> padrao, vector<char> busca) {
 
 ### 4. LCS (Longest Common Subsequence)
 
-Encontra a sequência mais longa comum a duas strings.
+Encontra a sequência mais longa comum a duas strings. É um problema clássico de Programação Dinâmica.
 
-#### Aplicação
-- Comparar similaridade entre textos
-- Problema clássico de Programação Dinâmica
-- Complexidade: O(m * n)
+#### Conceito
+- Uma subsequência é uma sequência que aparece em ordem relativa, mas não necessariamente consecutiva
+- Exemplo: "AGGTAB" e "GXTXAYB" têm LCS = "GTAB" (tamanho 4)
+- Usamos uma matriz dp onde `dp[i][j]` = tamanho da LCS das primeiras i caracteres da string x e primeiras j caracteres da string y
+
+#### Recorrência
+```
+Se x[i-1] == y[j-1]:
+    dp[i][j] = dp[i-1][j-1] + 1
+Senão:
+    dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+```
+
+#### Código Completo
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int lcs(string x, string y) {
+    int m = x.size();
+    int n = y.size();
+
+    // Criar matriz dp
+    vector<vector<int>> dp(m + 1, vector<int>(n + 1, 0));
+
+    // Preencher a matriz
+    for (int i = 1; i <= m; i++) {
+        for (int j = 1; j <= n; j++) {
+            if (x[i - 1] == y[j - 1]) {
+                // Caracteres são iguais
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                // Caracteres são diferentes, pega o máximo
+                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
+            }
+        }
+    }
+
+    return dp[m][n];  // Tamanho da LCS
+}
+
+int main() {
+    int t;
+    cin >> t;
+    
+    while (t--) {
+        string a, b, c;
+        cin >> a >> b >> c;
+        
+        // Calcular LCS entre a e c
+        int lcs_ac = lcs(a, c);
+        if(a.size() == 2 && lcs_ac == 1) {
+            lcs_ac = 0;
+        }
+        
+        // Calcular LCS entre b e c
+        int lcs_bc = lcs(b, c);
+        if(b.size() == 2 && lcs_bc == 1) {
+            lcs_bc = 0;
+        }
+        
+        // Resultado é o tamanho de c menos o que foi "coberto"
+        int resultado = c.size() - lcs_ac - lcs_bc;
+        cout << resultado << endl;
+    }
+    
+    return 0;
+}
+```
+
+#### Exemplo de Execução
+```
+x = "AGGTAB"
+y = "GXTXAYB"
+
+Matriz dp:
+       ""  G  X  T  X  A  Y  B
+    "" 0   0  0  0  0  0  0  0
+    A  0   0  0  0  0  1  1  1
+    G  0   1  1  1  1  1  1  1
+    G  0   1  1  1  1  1  1  1
+    T  0   1  1  2  2  2  2  2
+    A  0   1  1  2  2  3  3  3
+    B  0   1  1  2  2  3  3  4
+
+LCS = 4 (string "GTAB")
+```
+
+#### Reconstrução da String LCS
+Se precisar reconstruir a string LCS (não apenas o tamanho):
+
+```cpp
+string reconstruct_lcs(string x, string y) {
+    int m = x.size();
+    int n = y.size();
+    
+    vector<vector<int>> dp(m + 1, vector<int>(n + 1, 0));
+    
+    for (int i = 1; i <= m; i++) {
+        for (int j = 1; j <= n; j++) {
+            if (x[i - 1] == y[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
+            }
+        }
+    }
+    
+    // Reconstruir a string
+    string lcs = "";
+    int i = m, j = n;
+    
+    while (i > 0 && j > 0) {
+        if (x[i - 1] == y[j - 1]) {
+            lcs = x[i - 1] + lcs;  // Adiciona caractere no início
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--;
+        } else {
+            j--;
+        }
+    }
+    
+    return lcs;
+}
+```
+
+#### Complexidade
+- Tempo: O(m * n) onde m e n são os tamanhos das strings
+- Espaço: O(m * n) para a matriz dp
+
+#### Aplicações
+- Comparar similaridade entre DNA
+- Diff de arquivos
+- Corrigir erros de digitação
+- Verificar se uma string é subsequência de outra
 
 ---
 
