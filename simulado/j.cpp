@@ -13,7 +13,6 @@ int main() {
     for(int i = 0; i < n; i++) {
         int p;
         cin >> p;
-        // Inicializa o par com (p, 0) e adiciona ao vetor
         vet.push_back({p, 0});
     }
     while(dia_atual <= 201){
