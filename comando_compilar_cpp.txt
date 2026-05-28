@@ -1,1 +1,5 @@
 g++ main.cpp -o main && ./main
+3
+abcde ace
+abcd abed
+aaa aa
